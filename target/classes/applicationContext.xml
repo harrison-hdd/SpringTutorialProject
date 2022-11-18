@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--    scans the packages for beans annotated with @Component() and create beans from there without having to define beans in this xml-->
+    <context:component-scan  base-package="dao,service" />
+
+    <bean id="dataSource"
+          class = "org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name = "driverClassName" value = "org.sqlite.JDBC"/>
+        <property name = "url" value = "jdbc:sqlite:data.sqlite" />
+    </bean>
+
+<!--    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">-->
+<!--        <property name="dataSource" ref="dataSource"/>-->
+<!--    </bean>-->
+
+    <!--    byType is used for setter injection-->
+    <!--    byName can be used if the injected param and the property have the same name, i.e. both are dataSource-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" autowire="byName"/>
+
+    <!--As you follow through the tutorial, add additional bean definitions below-->
+<!--    will this instance of studentDAO be the same throughout the lifetime of the app?-->
+<!--    <bean id="studentDAO" class="dao.StudentDAOImpl" autowire="constructor"/>-->
+
+<!--    <bean id="classDAO" class="dao.ClassDAOImpl" autowire="constructor"/>-->
+
+    <!--    autowire tells Spring to infer the dependency type from the constructor and inject the dependency in there-->
+<!--    <bean id="reportService" class="service.report.ScheduleReportService" autowire="constructor">-->
+<!--        &lt;!&ndash;setter injection&ndash;&gt;-->
+<!--        <property name="classes">-->
+<!--            <list>-->
+<!--                <ref bean="CS120"/>-->
+<!--                <ref bean="CS205"/>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean>-->
+
+    <util:list id="classes">
+        <ref bean="CS120"/>
+        <ref bean="CS205"/>
+    </util:list>
+
+
+    <bean id="CS120" class = "model.Class">
+        <constructor-arg value="120"/>
+        <constructor-arg value="Intro to CS"/>
+        <constructor-arg value="TMCB 111"/>
+        <constructor-arg value="Wilkerson"/>
+    </bean>
+
+    <bean id="CS205" class = "model.Class">
+        <property name="classID" value="205"/>
+        <property name="className" value="Java Prog"/>
+        <property name="room" value="JFSB 111"/>
+        <property name="professor" value="Rodham"/>
+    </bean>
+
+</beans>
